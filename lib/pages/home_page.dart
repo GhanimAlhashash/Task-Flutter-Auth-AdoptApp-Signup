@@ -13,6 +13,31 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Pet Adopt"),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            ListTile(
+              title: Text("Sign in"),
+              trailing: Icon(Icons.login),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text("Sign up"),
+              trailing: Icon(Icons.how_to_reg),
+              onTap: () {
+                context.push('/signup');
+              },
+            ),
+            // DrawerHeader(
+            //   child: Text("Sign in please"),
+            //   decoration: BoxDecoration(
+            //     color: Colors.blue,
+            //   ),
+            //   )
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

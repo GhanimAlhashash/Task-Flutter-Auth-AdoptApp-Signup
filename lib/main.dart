@@ -1,6 +1,8 @@
 import 'package:adopt_app/pages/add_page.dart';
 import 'package:adopt_app/pages/home_page.dart';
+import 'package:adopt_app/pages/signup_page.dart';
 import 'package:adopt_app/pages/update_page.dart';
+import 'package:adopt_app/providers/auth_provider.dart';
 import 'package:adopt_app/providers/pets_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,8 +10,11 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => PetsProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PetsProvider>(create: (_) => PetsProvider()),
+        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+      ],
       child: MyApp(),
     ),
   );
@@ -20,8 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationParser: _router.routeInformationParser,
-      routerDelegate: _router.routerDelegate,
+      routerConfig: _router,
     );
   }
 
@@ -36,10 +40,14 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => AddPage(),
       ),
       GoRoute(
+        path: '/signup',
+        builder: (context, state) => SignupPage(),
+      ),
+      GoRoute(
         path: '/update/:petId',
         builder: (context, state) {
           final pet = Provider.of<PetsProvider>(context).pets.firstWhere(
-              (pet) => pet.id.toString() == (state.params['petId']!));
+              (pet) => pet.id.toString() == (state.pathParameters['petId']!));
           return UpdatePage(pet: pet);
         },
       ),
