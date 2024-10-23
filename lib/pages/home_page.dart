@@ -1,3 +1,4 @@
+import 'package:adopt_app/providers/auth_provider.dart';
 import 'package:adopt_app/providers/pets_provider.dart';
 import 'package:adopt_app/widgets/pet_card.dart';
 import 'package:flutter/material.dart';
@@ -14,30 +15,51 @@ class HomePage extends StatelessWidget {
         title: const Text("Pet Adopt"),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            ListTile(
-              title: Text("Sign in"),
-              trailing: Icon(Icons.login),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Text("Sign up"),
-              trailing: Icon(Icons.how_to_reg),
-              onTap: () {
-                context.push('/signup');
-              },
-            ),
-            // DrawerHeader(
-            //   child: Text("Sign in please"),
-            //   decoration: BoxDecoration(
-            //     color: Colors.blue,
-            //   ),
-            //   )
-          ],
+          child: FutureBuilder(
+        future: context.read<AuthProvider>().initializeAuth(),
+        builder: (context, dataSnapshot) => Consumer<AuthProvider>(
+          builder: (context, authProvider, child) => authProvider.isAuth()
+              ? ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    DrawerHeader(
+                        child: Text("welcome ${authProvider.user.username}")),
+                    ListTile(
+                      title: Text("logout"),
+                      trailing: const Icon(Icons.logout),
+                      onTap: () {
+                        context.read<AuthProvider>().logout();
+                      },
+                    ),
+                  ],
+                )
+              : ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    DrawerHeader(
+                      child: Text("Sign in please"),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                      ),
+                    ),
+                    ListTile(
+                      title: Text("Sign in"),
+                      trailing: Icon(Icons.login),
+                      onTap: () {
+                        GoRouter.of(context).push('/signin');
+                      },
+                    ),
+                    ListTile(
+                      title: Text("Sign up"),
+                      trailing: Icon(Icons.how_to_reg),
+                      onTap: () {
+                        context.push('/signup');
+                      },
+                    ),
+                  ],
+                ),
         ),
-      ),
+      )),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
